@@ -61,16 +61,20 @@ for image in files:
 	warp = cv2.warpPerspective(img, M, (width, height))
 	warp = cv2.cvtColor(warp, cv2.COLOR_RGB2GRAY)
 	warp = cv2.adaptiveThreshold(warp, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 61, 10)
-	# warp = cv2.cvtColor(warp, cv2.COLOR_GRAY2RGB)
 	converted.append(warp.copy())
 
+cnt=0
+if not os.path.exists(os.path.join(base_path, "temp")):
+    os.makedirs(os.path.join(base_path, "temp"))
 for image in converted:
-	cv2.imwrite(os.path.join(base_path, "temp.jpg"), image)
-	# img = Image.fromarray(image)
+	cv2.imwrite(os.path.join(base_path, "temp/temp"+str(cnt)+".jpg"), image)
 	pdf.add_page()
-	pdf.image(os.path.join(base_path, "temp.jpg"), 0,0,210,297)
+	pdf.image(os.path.join(base_path, "temp/temp"+str(cnt)+".jpg"), 0,0,210,297)
+	cnt+=1
 try:
-	os.remove("temp.jpg")
+	for files in os.listdir(os.path.join(base_path, "temp")):
+		os.remove(os.path.join(os.path.join(base_path, "temp"), files))
+	os.rmdir(os.path.join(base_path, "temp"))
 except:
 	pass
 cv2.waitKey(0)
